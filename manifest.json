@@ -3,11 +3,36 @@
   "short_name": "声の豆知識",
   "description": "毎日ひとつ、声の豆知識を引こう！ボイストレーナーみかが届ける365の知恵。",
   "start_url": "./index.html",
+  "id": "./",
   "display": "standalone",
   "background_color": "#FAF7FF",
   "theme_color": "#6B4C9A",
   "orientation": "portrait",
   "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
     {
       "src": "icon.svg",
       "sizes": "any",
@@ -15,5 +40,8 @@
       "purpose": "any"
     }
   ],
-  "categories": ["entertainment", "education"]
+  "categories": [
+    "entertainment",
+    "education"
+  ]
 }
