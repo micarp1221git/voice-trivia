@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>声の豆知識おみくじ</title>
-<meta name="description" content="ボイストレーナーみかが届ける、毎日ひとつの声の豆知識。おみくじを引いて、声のヒントを集めよう！">
+<title>声のウソホント</title>
+<meta name="description" content="その常識、ウソ？ホント？ボイストレーナーみかと学ぶ、声のウソホントクイズ。毎日の豆知識おみくじも引けます。">
 <meta name="theme-color" content="#6B4C9A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="声の豆知識">
+<meta name="apple-mobile-web-app-title" content="声のウソホント">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 
 <!-- OGP -->
-<meta property="og:title" content="声の豆知識おみくじ">
-<meta property="og:description" content="毎日ひとつ、声の豆知識を引こう！ボイストレーナーみかが届ける365の知恵。">
+<meta property="og:title" content="声のウソホント">
+<meta property="og:description" content="その常識、ウソ？ホント？ボイストレーナーみかと学ぶ、声のウソホントクイズ。">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -37,6 +37,14 @@
   --secondary-dark: #B08C2E;
   --secondary-light: #F5E6B8;
   --on-secondary: #2A1F00;
+
+  /* ウソホント モードの意味色（青系は加齢で見えにくいため回避） */
+  --honto: #3E8E5A;
+  --honto-bg: #E4F1E8;
+  --uso: #C0503C;
+  --uso-bg: #F8E6E1;
+  --half: #C08A2E;
+  --half-bg: #F7ECD6;
 
   --background: #FAF7FF;
   --surface: #FFFFFF;
@@ -691,6 +699,217 @@ body {
 .mt-lg { margin-top: var(--space-lg); }
 .hidden { display: none !important; }
 
+/* ==========================================================
+   ウソホント クイズモード
+   ========================================================== */
+.quiz-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: var(--on-primary);
+  padding: 48px 20px 20px;
+  text-align: center;
+}
+.quiz-header h2 { font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+.quiz-header-sub { font-size: 13px; opacity: 0.9; margin-top: 6px; }
+
+.quiz-scorebar {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  margin-top: 14px;
+}
+.quiz-scorebar .score-block { text-align: center; }
+.quiz-scorebar .score-num { font-size: 18px; font-weight: 700; }
+.quiz-scorebar .score-lbl { font-size: 11px; opacity: 0.85; }
+
+.quiz-body { flex: 1; padding: 20px; padding-bottom: 90px; }
+
+.quiz-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--secondary-light);
+  color: var(--secondary-dark);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--rounded-full);
+  margin-bottom: 14px;
+}
+
+.quiz-card {
+  background: var(--surface);
+  border-radius: var(--rounded-xl);
+  padding: 26px 22px;
+  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--primary-container);
+  max-width: 420px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+.quiz-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+.quiz-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-container);
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--rounded-full);
+  margin-bottom: 16px;
+}
+.quiz-claim-lead { font-size: 14px; color: var(--outline); margin-bottom: 8px; }
+.quiz-claim {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--on-surface);
+  line-height: 1.55;
+  margin-bottom: 22px;
+}
+.quiz-claim .quote { color: var(--primary); }
+
+.quiz-choices { display: flex; flex-direction: column; gap: 12px; }
+.quiz-choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 14px 18px;
+  background: var(--surface);
+  color: var(--on-surface);
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  border: 2px solid var(--outline-variant);
+  border-bottom: 4px solid var(--outline-variant);
+  border-radius: var(--rounded-lg);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+}
+.quiz-choice:active { transform: translateY(2px); border-bottom-width: 2px; }
+.quiz-choice .choice-emoji { font-size: 22px; }
+.quiz-choice[disabled] { cursor: default; opacity: 0.55; }
+.quiz-choice.picked-honto { border-color: var(--honto); background: var(--honto-bg); color: var(--honto); opacity: 1; }
+.quiz-choice.picked-uso   { border-color: var(--uso);   background: var(--uso-bg);   color: var(--uso);   opacity: 1; }
+.quiz-choice.picked-half  { border-color: var(--half);  background: var(--half-bg);  color: var(--half);  opacity: 1; }
+.quiz-choice.is-answer {
+  border-color: var(--honto);
+  background: var(--honto-bg);
+  color: var(--honto);
+  opacity: 1;
+}
+.quiz-choice.is-answer::after { content: ' ✓'; margin-left: auto; font-size: 18px; }
+
+/* 判定後の結果ブロック */
+.quiz-result {
+  margin-top: 22px;
+  animation: fadeIn 0.4s ease;
+}
+.quiz-verdict {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 12px 16px;
+  border-radius: var(--rounded-lg);
+  margin-bottom: 16px;
+  text-align: center;
+}
+.quiz-verdict.ok  { background: var(--honto-bg); color: var(--honto); }
+.quiz-verdict.ng  { background: var(--half-bg);  color: var(--half); }
+.quiz-answer-line {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--on-surface);
+  margin-bottom: 10px;
+}
+.quiz-explain {
+  font-size: 16px;
+  color: var(--on-surface-variant);
+  line-height: 1.85;
+  margin-bottom: 16px;
+}
+.quiz-grade {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-dim);
+  color: var(--on-surface-variant);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--rounded-full);
+}
+.quiz-grade-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.quiz-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.btn-primary {
+  display: block;
+  flex: 1;
+  padding: 15px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-bottom: 4px solid var(--primary-dark);
+  border-radius: var(--rounded-lg);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-primary:active { transform: translateY(2px); border-bottom-width: 2px; }
+
+.quiz-monitor {
+  background: var(--surface);
+  border-radius: var(--rounded-lg);
+  padding: 16px;
+  border: 2px solid var(--outline-variant);
+  margin: 18px auto 0;
+  max-width: 420px;
+}
+.quiz-monitor-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.quiz-monitor-title { font-size: 14px; font-weight: 700; color: var(--on-surface); }
+.quiz-monitor-count { font-size: 14px; font-weight: 700; color: var(--primary); }
+.quiz-monitor-note { font-size: 13px; color: var(--outline); line-height: 1.6; }
+
+.quiz-done {
+  text-align: center;
+  padding: 30px 20px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.quiz-done-icon { font-size: 52px; margin-bottom: 12px; }
+.quiz-done-text { font-size: 16px; color: var(--on-surface); line-height: 1.7; margin-bottom: 6px; }
+.quiz-done-sub { font-size: 14px; color: var(--outline); line-height: 1.6; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -706,8 +925,8 @@ body {
      SPLASH SCREEN
      ============================================================ -->
 <div class="splash-screen" id="splash">
-  <div class="splash-icon">🎋</div>
-  <div class="splash-title">声の豆知識おみくじ</div>
+  <div class="splash-icon">⚖️</div>
+  <div class="splash-title">声のウソホント</div>
   <div class="splash-sub">by ボイストレーナーみか</div>
 </div>
 
@@ -750,6 +969,12 @@ body {
         <button class="btn-outline" style="flex:1" onclick="shareTrivia()">シェア 📤</button>
       </div>
     </div>
+
+    <!-- ウソホントへの導線 -->
+    <button class="quiz-choice" style="margin-top:20px; border-color:var(--primary-container); border-bottom-color:var(--primary-container); background:var(--primary-container); color:var(--primary-dark); font-size:16px;" onclick="switchTab('screen-quiz')">
+      <span class="choice-emoji">⚖️</span>
+      <span>声のウソホントに挑戦する</span>
+    </button>
 
     <!-- 進捗 -->
     <div class="progress-section">
@@ -815,6 +1040,34 @@ body {
 </div>
 
 <!-- ============================================================
+     SCREEN 3: QUIZ（声のウソホント）
+     ============================================================ -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header">
+    <h2>⚖️ 声のウソホント</h2>
+    <p class="quiz-header-sub">その常識、ウソ？ホント？</p>
+    <div class="quiz-scorebar">
+      <div class="score-block">
+        <div class="score-num" id="quiz-answered">0</div>
+        <div class="score-lbl">こたえた</div>
+      </div>
+      <div class="score-block">
+        <div class="score-num" id="quiz-correct">0</div>
+        <div class="score-lbl">正解</div>
+      </div>
+      <div class="score-block">
+        <div class="score-num" id="quiz-title">これから</div>
+        <div class="score-lbl">称号</div>
+      </div>
+    </div>
+  </div>
+
+  <main class="quiz-body" id="quiz-body">
+    <!-- 出題エリア（JSで描画） -->
+  </main>
+</div>
+
+<!-- ============================================================
      DETAIL OVERLAY
      ============================================================ -->
 <div class="detail-overlay" id="detail-overlay" onclick="closeDetailIfBg(event)">
@@ -835,6 +1088,10 @@ body {
     ホーム
   </button>
   <button class="nav-draw-btn" id="nav-draw-btn" onclick="handleNavDraw()">🎋</button>
+  <button class="nav-item" data-screen="screen-quiz" onclick="switchTab('screen-quiz')">
+    <span class="nav-item-icon">⚖️</span>
+    ウソホント
+  </button>
   <button class="nav-item" data-screen="screen-collection" onclick="switchTab('screen-collection')">
     <span class="nav-item-icon">📚</span>
     コレクション
@@ -879,6 +1136,44 @@ const CATEGORIES = {
 };
 
 /* ==========================================================
+   ウソホント クイズ設定
+   ========================================================== */
+const QUIZ_KEY = 'voice-uso-honto-v1';
+const QUIZ_CATEGORIES = {
+  '声と才能':     { emoji: '🎯' },
+  '声の鍛え方':   { emoji: '💪' },
+  '飲食と声':     { emoji: '🍵' },
+  '喉のケア':     { emoji: '💊' },
+  '滑舌':         { emoji: '👄' },
+  '共鳴':         { emoji: '🎙️' },
+  '緊張と本番':   { emoji: '🫧' },
+  '呼吸':         { emoji: '🌬️' },
+  '声と年齢':     { emoji: '⏳' },
+  '録音と印象':   { emoji: '🎧' },
+  '姿勢':         { emoji: '🧍' },
+};
+const GRADE_LABEL = {
+  'A': '研究でしっかり確認',
+  'B': '研究で裏づけあり',
+  'C': '現場の経験則ベース',
+  'D': 'はっきりした裏づけは弱め',
+};
+const QUIZ_TITLES = [
+  { min: 25, name: '声ハカセ' },
+  { min: 10, name: '声のツウ' },
+  { min: 1,  name: '声の常識人' },
+  { min: 0,  name: 'これから' },
+];
+
+let allFacts = [];
+let currentQuizFact = null;
+let quizRevealed = false;
+let quizState = {
+  answeredIds: [],
+  correctIds: [],
+};
+
+/* ==========================================================
    Data Loading
    ========================================================== */
 async function loadTips() {
@@ -891,6 +1186,32 @@ async function loadTips() {
     console.error('Tips loading error:', e);
     allTips = getFallbackTips();
   }
+}
+
+async function loadFacts() {
+  try {
+    const res = await fetch('facts.json');
+    if (!res.ok) throw new Error('Failed to load');
+    const data = await res.json();
+    allFacts = data.facts || [];
+  } catch (e) {
+    console.error('Facts loading error:', e);
+    allFacts = [];
+  }
+}
+
+function loadQuizState() {
+  const raw = localStorage.getItem(QUIZ_KEY);
+  if (raw) {
+    try {
+      const saved = JSON.parse(raw);
+      quizState = { ...quizState, ...saved };
+    } catch (e) { /* ignore corrupt */ }
+  }
+}
+
+function saveQuizState() {
+  localStorage.setItem(QUIZ_KEY, JSON.stringify(quizState));
 }
 
 function getFallbackTips() {
@@ -1145,6 +1466,218 @@ function closeDetailIfBg(e) {
 }
 
 /* ==========================================================
+   ウソホント クイズ
+   ========================================================== */
+const CHOICE_META = {
+  'ホント':     { cls: 'picked-honto', emoji: '⭕' },
+  '半分ホント': { cls: 'picked-half',  emoji: '🔺' },
+  'ウソ':       { cls: 'picked-uso',   emoji: '❌' },
+};
+let quizSelected = null;
+
+function quizTitleFor(count) {
+  for (const t of QUIZ_TITLES) {
+    if (count >= t.min) return t.name;
+  }
+  return 'これから';
+}
+
+function updateQuizStats() {
+  const answered = quizState.answeredIds.length;
+  const correct = quizState.correctIds.length;
+  document.getElementById('quiz-answered').textContent = answered;
+  document.getElementById('quiz-correct').textContent = correct;
+  document.getElementById('quiz-title').textContent = quizTitleFor(answered);
+}
+
+function pickNextFact() {
+  const unanswered = allFacts.filter(f => !quizState.answeredIds.includes(f.id));
+  const pool = unanswered.length > 0 ? unanswered : allFacts;
+  if (pool.length === 0) return null;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function startQuiz() {
+  if (allFacts.length === 0) {
+    document.getElementById('quiz-body').innerHTML =
+      '<div class="quiz-done"><div class="quiz-done-icon">🙏</div>' +
+      '<div class="quiz-done-text">問題を読み込めませんでした。</div>' +
+      '<div class="quiz-done-sub">通信環境のよい場所で、もう一度開いてみてください。</div></div>';
+    return;
+  }
+  const allDone = quizState.answeredIds.length >= allFacts.length;
+  if (allDone) {
+    renderQuizDone();
+    return;
+  }
+  currentQuizFact = pickNextFact();
+  quizRevealed = false;
+  quizSelected = null;
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion() {
+  const f = currentQuizFact;
+  if (!f) return;
+  const cat = QUIZ_CATEGORIES[f.category] || { emoji: '💡' };
+  const choices = ['ホント', '半分ホント', 'ウソ'].map(c => {
+    const m = CHOICE_META[c];
+    return `<button class="quiz-choice" onclick="answerQuiz('${c}')">
+      <span class="choice-emoji">${m.emoji}</span><span>${c}</span>
+    </button>`;
+  }).join('');
+
+  document.getElementById('quiz-body').innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-cat"><span>${cat.emoji}</span>${escapeHtml(f.category)}</div>
+      <div class="quiz-claim-lead">こう言われています——</div>
+      <div class="quiz-claim"><span class="quote">「</span>${escapeHtml(f.claim)}<span class="quote">」</span></div>
+      <div class="quiz-choices">${choices}</div>
+    </div>
+    <div class="quiz-monitor">
+      <div class="quiz-monitor-row">
+        <span class="quiz-monitor-title">📈 これまでの記録</span>
+        <span class="quiz-monitor-count" id="quiz-inline-count"></span>
+      </div>
+      <div class="quiz-monitor-note">正解を競うより、「へぇ」を集める遊びです。間違えても大丈夫。</div>
+    </div>
+  `;
+  updateInlineCount();
+  updateQuizStats();
+}
+
+function updateInlineCount() {
+  const el = document.getElementById('quiz-inline-count');
+  if (el) el.textContent = `${quizState.answeredIds.length} / ${allFacts.length} 問`;
+}
+
+function answerQuiz(choice) {
+  if (quizRevealed) return;
+  const f = currentQuizFact;
+  if (!f) return;
+  quizRevealed = true;
+  quizSelected = choice;
+  const isCorrect = (choice === f.answer);
+
+  if (!quizState.answeredIds.includes(f.id)) {
+    quizState.answeredIds.push(f.id);
+    if (isCorrect && !quizState.correctIds.includes(f.id)) {
+      quizState.correctIds.push(f.id);
+    }
+    saveQuizState();
+  }
+
+  renderQuizResult(isCorrect);
+  updateQuizStats();
+  if (isCorrect) showConfetti();
+}
+
+function renderQuizResult(isCorrect) {
+  const f = currentQuizFact;
+  const cat = QUIZ_CATEGORIES[f.category] || { emoji: '💡' };
+
+  const choicesHtml = ['ホント', '半分ホント', 'ウソ'].map(c => {
+    const m = CHOICE_META[c];
+    let cls = 'quiz-choice';
+    if (c === f.answer) cls += ' is-answer';
+    else if (c === quizSelected) cls += ' ' + m.cls;
+    return `<button class="${cls}" disabled>
+      <span class="choice-emoji">${m.emoji}</span><span>${c}</span>
+    </button>`;
+  }).join('');
+
+  const verdict = isCorrect
+    ? '<div class="quiz-verdict ok">正解！ さすがです 👏</div>'
+    : '<div class="quiz-verdict ng">おしい！ いい勘してます 🌱</div>';
+
+  const gradeLabel = GRADE_LABEL[f.grade] || '';
+  const allDone = quizState.answeredIds.length >= allFacts.length;
+
+  document.getElementById('quiz-body').innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-cat"><span>${cat.emoji}</span>${escapeHtml(f.category)}</div>
+      <div class="quiz-claim-lead">こう言われています——</div>
+      <div class="quiz-claim"><span class="quote">「</span>${escapeHtml(f.claim)}<span class="quote">」</span></div>
+      <div class="quiz-choices">${choicesHtml}</div>
+      <div class="quiz-result">
+        ${verdict}
+        <div class="quiz-answer-line">答えは 【${escapeHtml(f.answer)}】</div>
+        <div class="quiz-explain">${escapeHtml(f.explanation)}</div>
+        <div class="quiz-grade">
+          <span class="quiz-grade-letter">${escapeHtml(f.grade)}</span>
+          <span>たしかさ：${escapeHtml(gradeLabel)}</span>
+        </div>
+        <div class="quiz-actions">
+          <button class="btn-outline" style="flex:1" onclick="shareQuizFact()">シェア 📤</button>
+          <button class="btn-primary" onclick="startQuiz()">${allDone ? '結果を見る' : '次の問題へ →'}</button>
+        </div>
+      </div>
+    </div>
+    <div class="quiz-monitor">
+      <div class="quiz-monitor-row">
+        <span class="quiz-monitor-title">📈 これまでの記録</span>
+        <span class="quiz-monitor-count">${quizState.answeredIds.length} / ${allFacts.length} 問</span>
+      </div>
+      <div class="quiz-monitor-note">監修：ボイストレーナーみか（研究文献ベース）</div>
+    </div>
+  `;
+}
+
+function renderQuizDone() {
+  const answered = quizState.answeredIds.length;
+  const correct = quizState.correctIds.length;
+  document.getElementById('quiz-body').innerHTML = `
+    <div class="quiz-done">
+      <div class="quiz-done-icon">🎉</div>
+      <div class="quiz-done-text">ぜんぶのウソホントに挑戦しました！</div>
+      <div class="quiz-done-sub">
+        ${answered}問中 ${correct}問 正解。称号は「${quizTitleFor(answered)}」です。<br>
+        声の常識、ずいぶん詳しくなりましたね。
+      </div>
+      <div class="quiz-actions" style="max-width:340px; margin:22px auto 0;">
+        <button class="btn-outline" style="flex:1" onclick="shareQuizScore()">結果をシェア 📤</button>
+        <button class="btn-primary" onclick="resetQuizAndStart()">もう一周する</button>
+      </div>
+    </div>
+  `;
+  updateQuizStats();
+}
+
+function resetQuizAndStart() {
+  quizState.answeredIds = [];
+  // correctIds は通算記録として残す
+  saveQuizState();
+  startQuiz();
+}
+
+async function shareQuizFact() {
+  const f = currentQuizFact;
+  if (!f) return;
+  const text = `⚖️ 声のウソホント\n\n「${f.claim}」\n→ 答えは【${f.answer}】\n\n${f.explanation}\n\n#声のウソホント\nby ボイストレーナーみか`;
+  await doShare(text);
+}
+
+async function shareQuizScore() {
+  const answered = quizState.answeredIds.length;
+  const correct = quizState.correctIds.length;
+  const text = `⚖️ 声のウソホント、${answered}問中${correct}問 正解でした！\nあなたはいくつ分かる？\n\n#声のウソホント\nby ボイストレーナーみか`;
+  await doShare(text);
+}
+
+async function doShare(text) {
+  if (navigator.share) {
+    try { await navigator.share({ text }); } catch (e) { /* cancelled */ }
+  } else {
+    try {
+      await navigator.clipboard.writeText(text);
+      showToast('コピーしました！');
+    } catch (e) {
+      prompt('コピーしてね：', text);
+    }
+  }
+}
+
+/* ==========================================================
    Navigation
    ========================================================== */
 function switchTab(screenId) {
@@ -1159,6 +1692,13 @@ function switchTab(screenId) {
     document.querySelectorAll('.btn-pill').forEach(b => b.classList.remove('active'));
     const allBtn = document.querySelector('.btn-pill[data-filter="all"]');
     if (allBtn) allBtn.classList.add('active');
+  }
+  if (screenId === 'screen-quiz') {
+    updateQuizStats();
+    // すでに出題中ならそのまま、なければ新しい問題を出す
+    if (!currentQuizFact || quizRevealed) {
+      startQuiz();
+    }
   }
   window.scrollTo(0, 0);
 }
@@ -1259,8 +1799,10 @@ async function registerSW() {
 async function init() {
   registerSW();
   loadState();
-  await loadTips();
+  loadQuizState();
+  await Promise.all([loadTips(), loadFacts()]);
   buildFilterButtons();
+  updateQuizStats();
 
   const today = getToday();
   if (state.drawnDate === today && state.drawnToday !== null) {

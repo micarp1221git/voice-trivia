@@ -1,9 +1,10 @@
-const CACHE_NAME = 'voice-trivia-v2';
+const CACHE_NAME = 'voice-trivia-v3';
 const ASSETS = [
   './index.html',
   './manifest.json',
   './icon.svg',
   './tips.json',
+  './facts.json',
 ];
 
 self.addEventListener('install', (e) => {
