@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>声のウソホント</title>
-<meta name="description" content="その常識、ウソ？ホント？ボイストレーナーみかと学ぶ、声のウソホントクイズ。毎日の豆知識おみくじも引けます。">
+<title>ボイトレ豆知識</title>
+<meta name="description" content="毎日ひとつ、声とボイトレの豆知識。ウソホントクイズも。ボイストレーナーみか監修。">
 <meta name="theme-color" content="#6B4C9A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="声のウソホント">
+<meta name="apple-mobile-web-app-title" content="ボイトレ豆知識">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 
 <!-- OGP -->
-<meta property="og:title" content="声のウソホント">
+<meta property="og:title" content="ボイトレ豆知識">
 <meta property="og:description" content="その常識、ウソ？ホント？ボイストレーナーみかと学ぶ、声のウソホントクイズ。">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -926,7 +926,7 @@ body {
      ============================================================ -->
 <div class="splash-screen" id="splash">
   <div class="splash-icon">⚖️</div>
-  <div class="splash-title">声のウソホント</div>
+  <div class="splash-title">ボイトレ豆知識</div>
   <div class="splash-sub">by ボイストレーナーみか</div>
 </div>
 
@@ -935,7 +935,7 @@ body {
      ============================================================ -->
 <div id="screen-home" class="screen active">
   <header class="app-header">
-    <h1>🎋 声の豆知識おみくじ</h1>
+    <h1>📖 ボイトレ豆知識</h1>
     <p class="app-tagline">毎日ひとつ、声のヒントを引こう</p>
     <div class="header-stats">
       <div class="header-stat">
@@ -956,7 +956,7 @@ body {
     <div id="draw-area" class="omikuji-area">
       <div class="omikuji-envelope" id="envelope" onclick="drawOmikuji()">
         <div class="omikuji-envelope-icon">🎋</div>
-        <div class="omikuji-envelope-text">おみくじを引く</div>
+        <div class="omikuji-envelope-text">今日の豆知識を開く</div>
         <div class="omikuji-envelope-sub">タップして今日の豆知識を</div>
       </div>
     </div>
@@ -998,7 +998,7 @@ body {
     <div class="streak-section">
       <div class="streak-icon">🔥</div>
       <div class="streak-info">
-        <div class="streak-label">連続おみくじ</div>
+        <div class="streak-label">連続記録</div>
         <div class="streak-value" id="streak-current">0日</div>
       </div>
       <div class="streak-best">
@@ -1718,7 +1718,7 @@ async function shareTrivia(tip) {
   tip = tip || currentDetailTip;
   if (!tip) return;
   const cat = CATEGORIES[tip.category] || { emoji: '📝' };
-  const text = `${cat.emoji} 今日の声の豆知識\n\n「${tip.title}」\n\n${tip.body}\n\n#声の豆知識おみくじ\nby ボイストレーナーみか`;
+  const text = `${cat.emoji} 今日の声の豆知識\n\n「${tip.title}」\n\n${tip.body}\n\n#ボイトレ豆知識\nby ボイストレーナーみか`;
 
   if (navigator.share) {
     try { await navigator.share({ text }); } catch (e) { /* cancelled */ }
@@ -1840,7 +1840,7 @@ async function setupDailyOmikujiReminder(){
     if(pending && pending.notifications && pending.notifications.some(n => Number(n.id) === 1)) return;
     await LN.schedule({ notifications: [{
       id: 1,
-      title: '今日の声みくじ、まだ引いてない？ 🎋',
+      title: '今日のボイトレ豆知識、開いた？ 📖',
       body: '声の豆知識を1日1つ。10秒で読めます',
       schedule: { on: { hour: 8, minute: 0 }, allowWhileIdle: true }
     }] });
