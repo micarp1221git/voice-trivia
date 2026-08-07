@@ -1786,8 +1786,13 @@ function formatDate(dateStr) {
 /* ==========================================================
    PWA
    ========================================================== */
+// ネイティブアプリ（Capacitor）判定。Webでは何もしない
+function isNativeApp(){
+  return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+}
+
 async function registerSW() {
-  if ('serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator && !isNativeApp()) {
     try { await navigator.serviceWorker.register('sw.js'); }
     catch (e) { console.log('SW registration skipped:', e); }
   }
@@ -1821,6 +1826,27 @@ async function init() {
 }
 
 init();
+</script>
+<script>
+// ネイティブ版のみ: 毎朝8:00「今日の声みくじ」リマインダー（ローカル通知・サーバー不要）
+async function setupDailyOmikujiReminder(){
+  if(!isNativeApp()) return;
+  try{
+    const LN = window.Capacitor.Plugins.LocalNotifications;
+    if(!LN) return;
+    const perm = await LN.requestPermissions();
+    if(!perm || perm.display !== 'granted') return;
+    const pending = await LN.getPending();
+    if(pending && pending.notifications && pending.notifications.some(n => Number(n.id) === 1)) return;
+    await LN.schedule({ notifications: [{
+      id: 1,
+      title: '今日の声みくじ、まだ引いてない？ 🎋',
+      body: '声の豆知識を1日1つ。10秒で読めます',
+      schedule: { on: { hour: 8, minute: 0 }, allowWhileIdle: true }
+    }] });
+  }catch(e){ console.log('daily reminder skipped:', e); }
+}
+setTimeout(setupDailyOmikujiReminder, 2500);
 </script>
 </body>
 </html>
