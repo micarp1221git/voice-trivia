@@ -614,6 +614,12 @@ body {
   color: var(--outline);
   margin-top: 8px;
 }
+.sources { margin-top: 14px; text-align: left; font-size: 12px; color: var(--outline); }
+.sources summary { cursor: pointer; text-align: center; color: var(--primary); font-weight: 600; font-size: 13px; }
+.sources p { margin: 10px 0 0; line-height: 1.7; }
+.sources ul { margin: 6px 0 0; padding-left: 18px; }
+.sources li { margin: 4px 0; }
+.sources li a { font-weight: 500; font-size: 12px; }
 
 /* ==========================================================
    Confetti
@@ -1020,6 +1026,16 @@ body {
   <footer class="app-footer">
     <a href="https://note.com/micarp" target="_blank" rel="noopener">ボイストレーナーみか</a>
     <p class="footer-credit">by ボイストレーナーみか</p>
+    <!-- 2026-09-22 App Review 1.4.1（医療情報の出典と免責）対応。出典は実在を確かめたページだけ -->
+    <details class="sources" id="sources">
+      <summary>出典とご注意</summary>
+      <p>このアプリの豆知識とクイズは、声の使い方に関する一般的な情報です。医療上の判断は、このアプリだけで行わず、医師（耳鼻咽喉科）の助言を受けてください。喉の痛みや声がれが長く続くときは、受診をおすすめします。</p>
+      <p>声帯の病気・声の衛生・音声障害の治療に関する記述は、次の公開情報を参考にしています。</p>
+      <ul>
+        <li><a href="https://kompas.hosp.keio.ac.jp/disease/000225/" target="_blank" rel="noopener">慶應義塾大学病院 KOMPAS「声帯の病気」</a></li>
+        <li><a href="https://www.yokohama-cu.ac.jp/fukuhp/section/depts/nose_and_ears/voice_disorder.html" target="_blank" rel="noopener">横浜市立大学附属病院「音声障害」</a></li>
+      </ul>
+    </details>
   </footer>
 </div>
 
