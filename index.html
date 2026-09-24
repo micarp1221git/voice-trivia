@@ -1674,7 +1674,7 @@ async function shareQuizFact() {
   const f = currentQuizFact;
   if (!f) return;
   const text = `⚖️ 声のウソホント\n\n「${f.claim}」\n→ 答えは【${f.answer}】\n\n${f.explanation}\n\n#声のウソホント\nby ボイストレーナーみか`;
-  await doShare(text);
+  await doShare(text, makeShareCard('⚖️ 声のウソホント', `「${f.claim}」\n→ 答えは【${f.answer}】`, f.explanation));
 }
 
 async function shareQuizScore() {
@@ -1684,15 +1684,54 @@ async function shareQuizScore() {
   await doShare(text);
 }
 
-async function doShare(text) {
+/* シェア（2026-09-24 みかさん「X・インスタにシェア、アプリのURLも」）
+   アプリ版: iPhone標準のシェア画面に「画像カード＋文章＋App StoreのURL」を渡す（画像があるのでインスタにも出せる）
+   Web版: navigator.share（無ければコピー）。文章の最後にApp StoreのURLを付ける */
+const APP_STORE_URL = 'https://apps.apple.com/jp/app/id6814191307';
+function makeShareCard(label, title, body) {
+  const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  const grd = g.createLinearGradient(0, 0, 0, H); grd.addColorStop(0, '#7B5EA7'); grd.addColorStop(1, '#5A3F87');
+  g.fillStyle = grd; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#FFFFFF'; g.beginPath(); g.roundRect(60, 200, W - 120, H - 420, 40); g.fill();
+  const font = '"Hiragino Sans","Hiragino Kaku Gothic ProN",sans-serif';
+  g.fillStyle = '#FFFFFF'; g.font = `700 52px ${font}`; g.textAlign = 'center'; g.fillText(label, W / 2, 130);
+  const wrap = (text, size, maxW) => { g.font = `700 ${size}px ${font}`; const out = []; let cur = '';
+    for (const ch of String(text)) { if (ch === '\n') { out.push(cur); cur = ''; continue; }
+      if (g.measureText(cur + ch).width > maxW && cur && !'、。」）！？'.includes(ch)) { out.push(cur); cur = ch; } else cur += ch; }
+    if (cur) out.push(cur); return out; };
+  g.textAlign = 'left'; let y = 310;
+  g.fillStyle = '#3B2E4A'; for (const ln of wrap(title, 60, W - 240)) { g.font = `700 60px ${font}`; g.fillText(ln, 120, y); y += 84; }
+  y += 30; g.fillStyle = '#5B5068';
+  let lines = wrap(body, 40, W - 240); const maxLines = Math.floor((H - 300 - y) / 62);
+  if (lines.length > maxLines) { lines = lines.slice(0, maxLines); lines[maxLines - 1] = lines[maxLines - 1].slice(0, -1) + '…'; }
+  for (const ln of lines) { g.font = `400 40px ${font}`; g.fillText(ln, 120, y); y += 62; }
+  g.fillStyle = '#FFFFFF'; g.textAlign = 'center'; g.font = `700 44px ${font}`;
+  g.fillText('ボイトレ豆知識', W / 2, H - 130); g.font = `400 34px ${font}`; g.fillText('プロのボイストレーナー監修｜App Store', W / 2, H - 75);
+  return c.toDataURL('image/png');
+}
+async function doShare(text, card) {
+  const full = text + '\n' + APP_STORE_URL;
+  const P = window.Capacitor && window.Capacitor.Plugins;
+  if (isNativeApp() && P && P.Share) {
+    try {
+      const opts = { text: full, url: APP_STORE_URL, dialogTitle: 'シェア' };
+      if (card && P.Filesystem) {
+        const f = await P.Filesystem.writeFile({ path: 'share-card.png', data: card.split(',')[1], directory: 'CACHE' });
+        opts.files = [f.uri];
+      }
+      await P.Share.share(opts);
+    } catch (e) { /* キャンセル・失敗は黙る */ }
+    return;
+  }
   if (navigator.share) {
-    try { await navigator.share({ text }); } catch (e) { /* cancelled */ }
+    try { await navigator.share({ text, url: APP_STORE_URL }); } catch (e) { /* cancelled */ }
   } else {
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(full);
       showToast('コピーしました！');
     } catch (e) {
-      prompt('コピーしてね：', text);
+      prompt('コピーしてね：', full);
     }
   }
 }
@@ -1739,17 +1778,7 @@ async function shareTrivia(tip) {
   if (!tip) return;
   const cat = CATEGORIES[tip.category] || { emoji: '📝' };
   const text = `${cat.emoji} 今日の声の豆知識\n\n「${tip.title}」\n\n${tip.body}\n\n#ボイトレ豆知識\nby ボイストレーナーみか`;
-
-  if (navigator.share) {
-    try { await navigator.share({ text }); } catch (e) { /* cancelled */ }
-  } else {
-    try {
-      await navigator.clipboard.writeText(text);
-      showToast('コピーしました！');
-    } catch (e) {
-      prompt('コピーしてね：', text);
-    }
-  }
+  await doShare(text, makeShareCard(`${cat.emoji} 今日の声の豆知識`, `「${tip.title}」`, tip.body));
 }
 
 /* ==========================================================
