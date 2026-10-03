@@ -1909,7 +1909,8 @@ async function init() {
 init();
 </script>
 <script>
-// ネイティブ版のみ: 毎朝8:00「今日の声みくじ」リマインダー（ローカル通知・サーバー不要）
+// ネイティブ版のみ: 毎朝7:30「今日の豆知識」リマインダー（ローカル通知・サーバー不要）
+// 2026-10-03 みかさん「早口アプリと同じ時間にならないように」→ 10秒で読めるので、出かける前の朝7:30に（早口言葉は夜19:30）
 async function setupDailyOmikujiReminder(){
   if(!isNativeApp()) return;
   try{
@@ -1918,12 +1919,15 @@ async function setupDailyOmikujiReminder(){
     const perm = await LN.requestPermissions();
     if(!perm || perm.display !== 'granted') return;
     const pending = await LN.getPending();
-    if(pending && pending.notifications && pending.notifications.some(n => Number(n.id) === 1)) return;
+    // 時刻を変えたときに古い予約（8:00）が残らないよう、同じ時刻の予約が無ければ消してから入れ直す
+    const same = pending && pending.notifications && pending.notifications.some(n => Number(n.id) === 1 && n.schedule && n.schedule.on && n.schedule.on.hour === 7 && n.schedule.on.minute === 30);
+    if (same) return;
+    try { await LN.cancel({ notifications: [{ id: 1 }] }); } catch (e) {}
     await LN.schedule({ notifications: [{
       id: 1,
       title: '今日のボイトレ豆知識、開いた？ 📖',
       body: '声の豆知識を1日1つ。10秒で読めます',
-      schedule: { on: { hour: 8, minute: 0 }, allowWhileIdle: true }
+      schedule: { on: { hour: 7, minute: 30 }, allowWhileIdle: true }
     }] });
   }catch(e){ console.log('daily reminder skipped:', e); }
 }
