@@ -817,6 +817,7 @@ body {
 }
 .quiz-choice.is-answer::after { content: ' ✓'; margin-left: auto; font-size: 18px; }
 
+.after-play-link { display: block; margin: 16px auto 0; max-width: 380px; text-align: center; font-size: 14px; font-weight: 700; color: var(--primary-dark); text-decoration: underline; text-underline-offset: 3px; }
 /* 判定後の結果ブロック */
 .quiz-result {
   margin-top: 22px;
@@ -927,6 +928,44 @@ body {
 body.has-ad{padding-bottom:calc(var(--ad-h,0px) + env(safe-area-inset-bottom,0px))}
 body.has-ad .bottom-nav{bottom:calc(var(--ad-h,0px) + env(safe-area-inset-bottom,0px));padding-bottom:6px}
 </style>
+<style id="kintsugi-repair">
+/* 金継ぎの直し（読みにくい文字・極小文字・色のずれ）2026-10-08 みかさんOK */
+/* 金継ぎ 修理デモ（おみくじ＝ボイトレ豆知識・2026-10-07）
+   本体は無改変。<head> の最後に貼れば同じ見た目になる。
+   色は元栓（:root）で当てる。ライト表示のときだけ効かせる。 */
+
+@media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
+  /* ① 補足の灰色（--outline）を、色味はそのままで一段濃く（比 4.3 → 4.76） */
+  :root { --outline: #726D76; }
+
+  /* ② 金の封筒の文字は、白をやめて金の上用の墨（既存の --on-secondary）へ（比 2.4 → 5.1以上）
+        封筒の金色そのものは元のまま */
+  .omikuji-envelope-text,
+  .omikuji-envelope-sub { color: var(--on-secondary); text-shadow: none; }
+
+  /* ③ 文字として使う金は、塗りの金と分けて濃い1色に（比 3.16 → 4.63）
+        「最長記録」は style 属性で色が書かれているので、ここだけ !important で上書き */
+  .streak-value { color: #8E7122; }
+  #streak-best-val { color: #8E7122 !important; }
+}
+
+/* ④ 11px の極小文字をなくす。下のタブは 12px に */
+.nav-item { font-size: 12px; }
+
+/* ⑤ 補足の文字を 11・12・14px → 13px の1段に（目盛り・封筒の小文字・連続記録のラベル・クレジット・コレクションの見出しと数）
+      出典の注意書きは 12px のまま（13px にすると狭い幅で4行の壁になるため）
+      封筒の「今日の豆知識を開く」18px は主役なので触らない */
+.progress-milestone,
+.omikuji-envelope-sub,
+.streak-label,
+.streak-best,
+.footer-credit,
+.progress-title,
+#progress-text { font-size: 13px; }
+
+/* ⑥ 連続記録の数字 20px を、封筒の文字と同じ 18px の段へ */
+.streak-value { font-size: 18px; }
+</style>
 </head>
 
 <body>
@@ -951,7 +990,7 @@ body.has-ad .bottom-nav{bottom:calc(var(--ad-h,0px) + env(safe-area-inset-bottom
       <div class="header-stat">
         <span>📚</span>
         <span class="header-stat-num" id="stat-collected">0</span>
-        <span id="stat-total">/ 365</span>
+        <span id="stat-total"></span>
       </div>
       <div class="header-stat">
         <span>🔥</span>
@@ -978,6 +1017,7 @@ body.has-ad .bottom-nav{bottom:calc(var(--ad-h,0px) + env(safe-area-inset-bottom
       <div style="display: flex; gap: 10px; width: 100%; max-width: 380px; margin-top: 14px;">
         <button class="btn-outline" style="flex:1" onclick="shareTrivia()">シェア 📤</button>
       </div>
+      <a class="after-play-link" href="https://micarp1221git.github.io/voice-karte-form/?f=trivia" target="_blank" rel="noopener">あなたの声は何タイプ？ 無料の声のタイプ別診断 →</a>
     </div>
 
     <!-- ウソホントへの導線 -->
@@ -990,17 +1030,17 @@ body.has-ad .bottom-nav{bottom:calc(var(--ad-h,0px) + env(safe-area-inset-bottom
     <div class="progress-section">
       <div class="progress-header">
         <span class="progress-title">📚 コレクション</span>
-        <span class="progress-count" id="progress-text">0 / 365</span>
+        <span class="progress-count" id="progress-text"></span>
       </div>
       <div class="progress-track">
         <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
       </div>
-      <div class="progress-milestone">
+      <div class="progress-milestone" id="progress-milestone">
         <span>0</span>
-        <span>100</span>
-        <span>200</span>
-        <span>300</span>
-        <span>365</span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
 
@@ -1021,9 +1061,9 @@ body.has-ad .bottom-nav{bottom:calc(var(--ad-h,0px) + env(safe-area-inset-bottom
     <div class="cta-section">
       <div class="cta-section-text">
         声のこと、もっと知りたくなったら。<br>
-        ボイストレーナーみかが<br>あなたの声の悩みを一緒に整理します。
+        あなたの声が何タイプか、<br>無料の診断で分かります。
       </div>
-      <a href="https://note.com/micarp" target="_blank" rel="noopener">個別相談はこちら →</a>
+      <a href="https://micarp1221git.github.io/voice-karte-form/?f=trivia" target="_blank" rel="noopener">声のタイプ別診断（無料）→</a>
     </div>
   </main>
 
@@ -1370,6 +1410,11 @@ function updateStats() {
   document.getElementById('streak-current').textContent = state.streak + '日';
   document.getElementById('streak-best-val').textContent = state.bestStreak + '日';
   document.getElementById('collection-count-label').textContent = `${collected}個の豆知識を集めました`;
+  // 目盛りは豆知識の数に合わせる（2026-10-08: 365止まりで数は567のずれを直した）
+  const ms = document.querySelectorAll('#progress-milestone span');
+  if (total > 0 && ms.length === 5) {
+    [0, 0.25, 0.5, 0.75, 1].forEach((r, i) => { ms[i].textContent = i === 4 ? total : Math.round(total * r / 10) * 10; });
+  }
 }
 
 function renderStars(level) {
@@ -1658,6 +1703,7 @@ function renderQuizDone() {
         <button class="btn-outline" style="flex:1" onclick="shareQuizScore()">結果をシェア 📤</button>
         <button class="btn-primary" onclick="resetQuizAndStart()">もう一周する</button>
       </div>
+      <a class="after-play-link" href="https://micarp1221git.github.io/voice-karte-form/?f=trivia" target="_blank" rel="noopener">あなたの声は何タイプ？ 無料の声のタイプ別診断 →</a>
     </div>
   `;
   updateQuizStats();
