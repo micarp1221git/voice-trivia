@@ -1,4 +1,4 @@
-const CACHE_NAME = 'voice-trivia-v7';
+const CACHE_NAME = 'voice-trivia-v8';
 const ASSETS = [
   './index.html',
   './manifest.json',
